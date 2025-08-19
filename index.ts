@@ -422,25 +422,6 @@ if (isMainModule()) {
         const app = express();
         app.use(express.json());
         app.post("/mcp", async (req: Request, res: Response) => {
-          // In stateless mode, create a new instance of transport and server for each request
-          // to ensure complete isolation. A single instance would cause request ID collisions
-          // when multiple clients connect concurrently.
-          if (
-            !req.get("Authorization") ||
-            !req.get("Authorization")?.startsWith("Bearer ") ||
-            !req.get("Authorization")?.endsWith(REMOTE_SECRET_KEY)
-          ) {
-            console.error("Missing or invalid Authorization header");
-            res.status(401).json({
-              jsonrpc: "2.0",
-              error: {
-                code: -32603,
-                message: "Missing or invalid Authorization header",
-              },
-              id: null,
-            });
-            return;
-          }
           try {
             const server = mcpServer;
             const transport: StreamableHTTPServerTransport =
